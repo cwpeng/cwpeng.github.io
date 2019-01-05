@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Google Analytics 時間追蹤範例</title>
+<!-- 以下是 GA 追蹤碼的基本安裝 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=追蹤編號"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)};
+gtag("js", new Date());
+
+gtag("config", "追蹤編號");
+</script>
+<script>
+var startTime=(new Date()).getTime(); // 取得當前時間：毫秒
+function trackTiming(){
+	var time=(new Date()).getTime()-startTime; // 取得時間差：毫秒
+	// 送出時間紀錄
+	gtag("event", "timing_complete", {
+		"name": "凝視的時間",
+		"event_category": "使用行為",
+		"value": time
+	});
+	alert("User Timing Sent!");
+}
+</script>
+</head>
+<body>
+	追蹤網頁瀏覽次數
+	<button onclick="trackTiming();">點擊紀錄：凝視的時間</button>
+</body>
+</html>
