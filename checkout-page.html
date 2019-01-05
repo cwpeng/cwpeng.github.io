@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Checkout Page - GA 電子商務範例</title>
+<!-- 以下是 GA 追蹤碼的基本安裝 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=追蹤編號"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)};
+gtag("js", new Date());
+
+gtag("config", "追蹤編號");
+// 以下和電子商務有關的追蹤程式
+// 追蹤：開始結帳
+gtag("event", "begin_checkout", {
+	"items":[
+		{
+			"id": "產品編號 9487", // 產品編號
+			"name": "兔兔草", // 產品名稱
+			// 以上為必填，以下選填
+			"brand": "彭彭牌", // 產品品牌
+			"category": "寵物飼料", // 產品分類
+			"variant": "2 公斤裝",
+			"quantity": 1,
+			"price": "200"
+		}
+	]
+});
+</script>
+</head>
+<body>
+	結帳網頁，<a href="thankyou-page.html">完成購買</a>
+</body>
+</html>

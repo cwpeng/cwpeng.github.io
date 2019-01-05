@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Product Page - GA 電子商務範例</title>
+<!-- 以下是 GA 追蹤碼的基本安裝 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=追蹤編號"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)};
+gtag("js", new Date());
+
+gtag("config", "追蹤編號");
+// 以下和電子商務有關的追蹤程式
+// 追蹤：【兔兔草】產品詳細資訊的瀏覽次數
+gtag("event", "view_item", {
+	"items":[
+		{
+			"id": "產品編號 9487", // 產品編號
+			"name": "兔兔草", // 產品名稱
+			// 以上為必填，以下選填
+			"brand": "A 牌",
+			"category": "寵物飼料",
+			"variant": "2 公斤裝"
+		}
+	]
+});
+</script>
+</head>
+<body>
+	產品網頁，<a href="cart-page.html">加入購物車</a>
+</body>
+</html>
