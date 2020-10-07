@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Growing Cells</title>
+<title>Growing Forest</title>
 <style>
 html, body{
 	width:100%;height:100%;margin:0px;
@@ -13,7 +13,7 @@ body{
 }
 .head{
 	flex:none;height:80px;width:100%;
-	background-color:#cccccc;
+	background-color:#ccdddd;
 	text-align:center;
 }
 .head>.headline{
@@ -21,22 +21,27 @@ body{
 }
 .ground{
 	flex:auto;height:auto;width:100%;
-	display:flex;justify-content:center;align-items:center;
-	overflow:auto;
+	display:flex;justify-content:center;
+	overflow:auto;position:relative;
 }
 .ground>canvas{
 	position:absolute;border:1px solid #888888;
+}
+@media (max-width:1200px){
+	.ground{
+		justify-content:flex-start;
+	}
 }
 </style>
 </head>
 <body>
 	<div class="head">
-		<div class="headline">Growing Cells</div>
+		<div class="headline">Growing Forest</div>
 		<div class="menu">
-			<button id="start-btn" onclick="startGame();">Start</button>
-			<button id="next-btn" onclick="nextCircle();">Next</button>
-			<button id="pause-btn" onclick="pauseGame();">Pause</button>
-			<button id="clear-btn" onclick="clearGame();">Clear</button>
+			<button id="start-btn" disabled>Start</button>
+			<button id="next-btn">Next</button>
+			<button id="pause-btn">Pause</button>
+			<button id="clear-btn">Clear</button>
 		</div>
 	</div>
 	<div class="ground">
