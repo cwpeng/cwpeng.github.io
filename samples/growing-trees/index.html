@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta charset="utf-8" />
+<title>Growing Trees</title>
+<style>
+nav{
+	margin-bottom:10px;
+}
+</style>
+</head>
+<body>
+	<nav>
+		<button id="start-btn" onclick="engine.start();">Start</button>
+		<button id="next-circle-btn" onclick="engine.run();" disabled>Next Circle</button>
+		<button id="play-btn" onclick="engine.play();" disabled>Play</button>
+		<button id="stop-btn" onclick="engine.stop();" disabled>Stop</button>
+		<select id="action-type">
+			<option value="thing">Thing</option>
+			<option value="cell">Cell</option>
+		</select>
+		<span id="circle">Circle: 0</span>
+	</nav>
+	<canvas id="cvs"></canvas>
+	<script src="cell.js"></script>
+	<script src="thing.js"></script>
+	<script>
+		// 相關外部資料
+		const cst={
+			WIDTH:20, HEIGHT:15, CELL_SIZE:50
+		};
+		const imgs={
+			tree:"tree.png", water:"water.png", factory:"factory.png", cleanFactory:"clean-factory.png", fruit:"fruit.png"
+		};
+		// 準備畫布
+		const ctx=document.querySelector("#cvs").getContext("2d");
+		ctx.canvas.width=cst.WIDTH*cst.CELL_SIZE+1;
+		ctx.canvas.height=cst.HEIGHT*cst.CELL_SIZE+1;
+		// 設計遊戲的主要程序 (遊戲引擎)
+		const Engine=class{
+			constructor(){
+				// 紀錄主要格子的資料
+				this.data=null;
+				// 紀錄遊戲編號
+				this.id=null;
+				// 紀錄遊戲回合
+				this.circle=null;
+				// 事件綁定
+				this.click=this.click.bind(this);
+				this.run=this.run.bind(this);
+			}
+			async init(){
+				// 載入外部資源
+				await this.loadImages();
+				// 準備資料
+				this.data=[];
+				for(let x=0;x<cst.WIDTH;x++){
+					this.data[x]=[];
+					for(let y=0;y<cst.HEIGHT;y++){
+						this.data[x].push(new Cell(x, y));
+					}
+				}
+			}
+			// 載入外部資源
+			async loadImages(){
+				for(let key in imgs){
+					imgs[key]=await this.loadImage(imgs[key]);
+				}
+			}
+			loadImage(src){
+				return new Promise((resolve, reject)=>{
+					const img=new Image();
+					img.src=src;
+					img.addEventListener("load", function(){
+						resolve(this);
+					});
+				});
+			}
+			// 整體控制器
+			start(){
+				document.querySelector("#start-btn").disabled=true;
+				document.querySelector("#next-circle-btn").disabled=false;
+				document.querySelector("#play-btn").disabled=false;
+				document.querySelector("#stop-btn").disabled=false;
+				ctx.canvas.addEventListener("click", this.click);
+				this.circle=-1;
+				this.run();
+			}
+			play(){
+				if(this.id===null){
+					ctx.canvas.removeEventListener("click", this.click);
+					this.id=window.setInterval(this.run, 200);
+				}
+			}
+			stop(){
+				window.clearInterval(this.id);
+				this.id=null;
+				ctx.canvas.addEventListener("click", this.click);
+			}
+			// 點擊事件處理
+			click(e){
+				const x=Math.floor(e.offsetX/cst.CELL_SIZE);
+				const y=Math.floor(e.offsetY/cst.CELL_SIZE);
+				const type=document.querySelector("#action-type");
+				const data=this.data;
+				if(type.value==="thing"){
+					if(data[x][y].thing instanceof Tree){
+						data[x][y].thing=new Water(5);
+					}else if(data[x][y].thing instanceof Water){
+						data[x][y].thing=new CleanFactory(5);
+					}else if(data[x][y].thing instanceof CleanFactory){
+						data[x][y].thing=new Factory(5);
+					}else if(data[x][y].thing instanceof Factory){
+						data[x][y].thing=new Thing();
+					}else{
+						data[x][y].thing=new Tree(2);
+					}
+				}else{
+					if(data[x][y] instanceof BlockCell){
+						data[x][y]=new Cell(x, y);
+					}else{
+						data[x][y]=new BlockCell(x, y);
+					}
+				}
+				// 清空畫面
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				// 全部重畫
+				this.iterateCells("draw");
+			}
+			// 主要的運作引擎
+			run(){
+				// 彼此互動：收集週遭的環境資訊
+				this.iterateCells("feel", true);
+				// 根據環境資訊，更新物品
+				this.iterateCells("update");
+				// 清空畫面
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				// 全部重畫
+				this.iterateCells("draw");
+				// 更新回合數
+				this.circle++;
+				document.querySelector("#circle").textContent="Circle: "+this.circle;
+			}
+			// 輔助方法
+			iterateCells(methodName, random){
+				if(random){
+					const cells=[];
+					for(let x=0;x<cst.WIDTH;x++){
+						for(let y=0;y<cst.HEIGHT;y++){
+							cells.push(this.data[x][y]);
+						}
+					}
+					shuffle(cells);
+					cells.forEach((cell)=>{
+						cell[methodName]();
+					});
+				}else{
+					for(let x=0;x<cst.WIDTH;x++){
+						for(let y=0;y<cst.HEIGHT;y++){
+							this.data[x][y][methodName]();
+						}
+					}
+				}
+			}
+		}
+		const engine=new Engine();
+		engine.init();
+		// 支援的函式
+		function shuffle(array){
+			for(let i=array.length-1;i>0;i--){
+				const j=Math.floor(Math.random()*(i+1));
+				[array[i], array[j]]=[array[j], array[i]];
+			}
+		}
+	</script>
+</body>
+</html>
