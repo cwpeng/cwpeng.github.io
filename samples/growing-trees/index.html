@@ -105,16 +105,16 @@ nav{
 				const type=document.querySelector("#action-type");
 				const data=this.data;
 				if(type.value==="thing"){
-					if(data[x][y].thing instanceof Tree){
-						data[x][y].thing=new Water(5);
-					}else if(data[x][y].thing instanceof Water){
+					if(data[x][y].thing instanceof Water){
+						data[x][y].thing=new Tree(2);
+					}else if(data[x][y].thing instanceof Tree){
 						data[x][y].thing=new CleanFactory(5);
 					}else if(data[x][y].thing instanceof CleanFactory){
 						data[x][y].thing=new Factory(5);
 					}else if(data[x][y].thing instanceof Factory){
 						data[x][y].thing=new Thing();
 					}else{
-						data[x][y].thing=new Tree(2);
+						data[x][y].thing=new Water(5);
 					}
 				}else{
 					if(data[x][y] instanceof BlockCell){
